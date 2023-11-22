@@ -18,5 +18,5 @@ jobs:
       - name: Deploy with rsync
         run: |
           ls -a
-          rsync -auvPz ./ ${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USER }}/enpit-notification/
-          ssh ${{ secrets.SSH_HOST }} 'cd /home/$USER/enpit-notification; bash ./shell/setup.sh'
+          rsync -auvPz ./ ${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USER }}/twilio-monitor/
+          ssh ${{ secrets.SSH_HOST }} 'cd /home/$USER/twilio-monitor; bash ./shell/setup.sh'
