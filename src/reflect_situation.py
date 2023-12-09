@@ -185,13 +185,44 @@ def get_non_end_ids(config):
        
         cursor.close()
         conn.close()
+        
+import mysql.connector
+
+def get_parent_ids_no_compleated_from_child(config):
+    """
+    statusが1のmain_app_reservationchildのparent_idをリストで取得
+    """
+    # MySQLデータベースに接続
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+
+    try:
+        # main_app_reservationchildのstatusが1の項目のparent_idを取得するクエリ
+        query = "SELECT parent_id FROM main_app_reservationchild WHERE status = 1"
+        cursor.execute(query)
+
+        result = cursor.fetchall()
+
+        return [row[0] for row in result]
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return []
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
+
 
     
 
 def exac():
    
     for id_value in get_non_end_ids(config):
-        change_parent_status(config, id_value) #親のstatusを０から１へ変更
+        
         status=get_call_details(convert_id_to_sid(id_value))
         
         data = {
@@ -204,6 +235,10 @@ def exac():
         }
         
         insert_data_to_child(config, data)
+        
+        
+    for parent_ids in get_parent_ids_no_compleated_from_child(config):
+        change_parent_status(config, parent_ids) #親のstatusを０から１へ変更
     
 #example
-exac()
+# exac()
