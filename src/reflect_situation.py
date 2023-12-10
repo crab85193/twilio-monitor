@@ -7,6 +7,7 @@ from datetime import datetime
 from backports.zoneinfo import ZoneInfo
 import mysql.connector
 from dotenv import load_dotenv
+time = datetime.now(ZoneInfo('Asia/Tokyo'))
 
 load_dotenv(".env")
 
@@ -18,10 +19,7 @@ config = {
     'database': os.environ['DB_DATABASE'],
     }
 
-time = datetime.now(ZoneInfo('Asia/Tokyo'))
-id = uuid.uuid4() 
-id = str(id)
-id = id.replace('-', '')
+
 
 
 
@@ -88,6 +86,7 @@ def insert_data_to_child(config, data):
     指定されたデータをデータベースの main_app_reservationchild テーブルに挿入する関数
     twilioからのデータ及びstatus番号を作成する
     """
+    
     try:
         conn = mysql.connector.connect(**config)
         cursor = conn.cursor()
@@ -188,7 +187,7 @@ def get_non_end_ids(config):
         
 import mysql.connector
 
-def get_parent_ids_no_compleated_from_child(config):
+def get_parent_ids_compleated_from_child(config):
     """
     statusが1のmain_app_reservationchildのparent_idをリストで取得
     """
@@ -212,18 +211,17 @@ def get_parent_ids_no_compleated_from_child(config):
     finally:
         cursor.close()
         conn.close()
-
-
-
-
-
-    
+   
 
 def exac():
    
     for id_value in get_non_end_ids(config):
         
         status=get_call_details(convert_id_to_sid(id_value))
+        
+        id = uuid.uuid4() 
+        id = str(id)
+        id = id.replace('-', '')
         
         data = {
             'id':id,
@@ -236,9 +234,9 @@ def exac():
         
         insert_data_to_child(config, data)
         
-        
-    for parent_ids in get_parent_ids_no_compleated_from_child(config):
+    
+    for parent_ids in get_parent_ids_compleated_from_child(config):
         change_parent_status(config, parent_ids) #親のstatusを０から１へ変更
     
 #example
-# exac()
+exac()
