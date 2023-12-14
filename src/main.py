@@ -10,7 +10,7 @@ import sentry_sdk
 class TwilioDataProcessor:
     
     def __init__(self):
-        load_dotenv(".env")
+        load_dotenv()
 
         # Environment variables
         self.config = {
