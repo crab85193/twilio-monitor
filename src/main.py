@@ -21,14 +21,14 @@ class TwilioDataProcessor:
         }
         
         self.status_info = {
-        "queued": {"status":4, "message": "通話がキューに入れられている状態"},
-        "initiated": {"status":4, "message": "通話が開始されている状態"},
-        "in-progress": {"status":4, "message": "通話が進行中である状態"},
-        "ringing": {"status":4, "message": "通話が鳴っている状態"},
-        "completed": {"status":1, "message": "通話が完了した状態"},
-        "busy": {"status":2, "message": "通話が相手先で応答されずに忙しい状態"},
-        "failed": {"status":8, "message": "通話が失敗した状態"},
-        "no-answer": {"status":6, "message": "通話が相手先で応答がなかった状態"},
+        "queued": {"status":4, "message": "只今店舗への連絡を行っております","title":"お問い合わせ中"},
+        "initiated": {"status":4, "message": "只今店舗への連絡を行っております","title":"お問い合わせ中"},
+        "in-progress": {"status":4, "message": "只今店舗への連絡を行っております","title":"お問い合わせ中"},
+        "ringing": {"status":4, "message": "只今店舗への連絡を行っております","title":"お問い合わせ中"},
+        "completed": {"status":4, "message": "只今店舗への連絡を行っております","title":"お問い合わせ中"},
+        "busy": {"status":2, "message": "店舗が電話をとりませんでした。しばらく時間をおいて再度を予約をしてください","title":"お問い合わせ失敗"},
+        "failed": {"status":8, "message": "電話の発信ができませんでした。しばらく時間をおいて再度を予約をしてください","title":"エラー発生"},
+        "no-answer": {"status":6, "message": "店舗が電話をとりませんでした。しばらく時間をおいて再度を予約をしてください","title":"お問い合わせ失敗"},
     }
 
 
@@ -230,9 +230,9 @@ class TwilioDataProcessor:
                     data = {
                         'id': unique_id,
                         'datetime': str(datetime.now()),
-                        'status': str((lambda key: self.status_info.get(key, {}).get('status', 'Unknown'))(status["Status"])),
-                        'title': status["Status"],
-                        'message': (lambda key: self.status_info.get(key, {}).get('message', '情報がありません'))(status["Status"]),
+                        'status': str((lambda key: self.status_info.get(key, {}).get('status', 'none'))(status["Status"])),
+                        'title': (lambda key: self.status_info.get(key, {}).get('title', 'none'))(status["Status"]),
+                        'message': (lambda key: self.status_info.get(key, {}).get('message', 'none'))(status["Status"]),
                         'parent_id': id_value
                     }
                     
