@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  twilio-monitor:
+    container_name: twilio-monitor
+    build:
+      context: .
+      dockerfile: containers/twilio-monitor/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - .:/code
+    tty: true
+    env_file:
+      - .env.prod
+      
