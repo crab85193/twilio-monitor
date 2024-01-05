@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker exec -it twilio-monitor python main.py
+docker exec twilio-monitor python main.py
