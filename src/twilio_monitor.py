@@ -21,8 +21,8 @@ class TwilioMonitor:
         "initiated"  : {"status": WAIT   , "message": "只今店舗への連絡を行っております"                                    , "title":"お問い合わせ中"             },
         "in-progress": {"status": WAIT   , "message": "只今店舗への連絡を行っております"                                    , "title":"お問い合わせ中"             },
         "ringing"    : {"status": WAIT   , "message": "只今店舗への連絡を行っております"                                    , "title":"お問い合わせ中"             },
-        "completed"  : {"status": WAIT   , "message": "只今店舗への連絡を行っております"                                    , "title":"お問い合わせ中"             },
-        "busy"       : {"status" :FAILURE, "message": "店舗が電話をとりませんでした。しばらく時間をおいて再度を予約をしてください。", "title":"店舗様が通話中です"          },
+        "completed"  : {"status": FAILURE, "message": "店舗が応答しませんでした"                                           , "title":"応答がありませんでした"      },
+        "busy"       : {"status": FAILURE, "message": "店舗が電話をとりませんでした。しばらく時間をおいて再度を予約をしてください。", "title":"店舗様が通話中です"          },
         "failed"     : {"status": ERROR  , "message": "電話の発信ができませんでした。しばらく時間をおいて再度を予約をしてください。", "title":"電話の発信ができませんでした"  },
         "no-answer"  : {"status": FAILURE, "message": "店舗が電話をとりませんでした。しばらく時間をおいて再度を予約をしてください。", "title":"店舗様が電話をとりませんでした"},
     }
