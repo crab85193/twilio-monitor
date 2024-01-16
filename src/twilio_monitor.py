@@ -160,7 +160,7 @@ class TwilioMonitor:
         """
         insert_query = (
             "INSERT INTO main_app_reservationchild (id, datetime, status, title_ja, title_en, message_ja, message_en, parent_id) "
-            "VALUES (%s, %s, %s, %s, %s, %s)"
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         )
         
         if error:
