@@ -17,14 +17,14 @@ class TwilioMonitor:
     UNKNOWN = 9
     
     STATUS_INFO = {
-        "queued"     : {"status": WAIT   , "message": "只今店舗への連絡を行っております"                                    , "title":"お問い合わせ中"             },
-        "initiated"  : {"status": WAIT   , "message": "只今店舗への連絡を行っております"                                    , "title":"お問い合わせ中"             },
-        "in-progress": {"status": WAIT   , "message": "只今店舗への連絡を行っております"                                    , "title":"お問い合わせ中"             },
-        "ringing"    : {"status": WAIT   , "message": "只今店舗への連絡を行っております"                                    , "title":"お問い合わせ中"             },
-        "completed"  : {"status": FAILURE, "message": "店舗が応答しませんでした"                                           , "title":"応答がありませんでした"      },
-        "busy"       : {"status": FAILURE, "message": "店舗が電話をとりませんでした。しばらく時間をおいて再度を予約をしてください。", "title":"店舗様が通話中です"          },
-        "failed"     : {"status": ERROR  , "message": "電話の発信ができませんでした。しばらく時間をおいて再度を予約をしてください。", "title":"電話の発信ができませんでした"  },
-        "no-answer"  : {"status": FAILURE, "message": "店舗が電話をとりませんでした。しばらく時間をおいて再度を予約をしてください。", "title":"店舗様が電話をとりませんでした"},
+        "queued"     : {"status": WAIT   , "message_ja": "只今店舗への連絡を行っております", "message_en": "We are currently contacting the store.", "title_ja":"お問い合わせ中", "title_en":"Inquiring"},
+        "initiated"  : {"status": WAIT   , "message_ja": "只今店舗への連絡を行っております", "message_en": "We are currently contacting the store.", "title_ja":"お問い合わせ中", "title_en":"Inquiring"},
+        "in-progress": {"status": WAIT   , "message_ja": "只今店舗への連絡を行っております", "message_en": "We are currently contacting the store.", "title_ja":"お問い合わせ中", "title_en":"Inquiring"},
+        "ringing"    : {"status": WAIT   , "message_ja": "只今店舗への連絡を行っております", "message_en": "We are currently contacting the store.", "title_ja":"お問い合わせ中", "title_en":"Inquiring"},
+        "completed"  : {"status": FAILURE, "message_ja": "店舗が応答しませんでした", "message_en": "Store did not respond.", "title_ja":"応答がありませんでした", "title_en":"There was no response."},
+        "busy"       : {"status": FAILURE, "message_ja": "店舗が電話をとりませんでした。しばらく時間をおいて再度を予約をしてください。", "message_en": "The store did not pick up the phone. Please call back in a few hours to make another appointment.", "title_ja":"店舗様が通話中です", "title_en":"The store is on the phone with another customer."},
+        "failed"     : {"status": ERROR  , "message_ja": "電話の発信ができませんでした。しばらく時間をおいて再度を予約をしてください。", "message_en": "The store did not pick up the phone. Please call back in a few hours to make another appointment.", "title_ja":"電話の発信ができませんでした", "title_en":"Phone call could not be placed." },
+        "no-answer"  : {"status": FAILURE, "message_ja": "店舗が電話をとりませんでした。しばらく時間をおいて再度を予約をしてください。", "message_en": "The store did not pick up the phone. Please call back in a few hours to make another appointment.", "title_ja":"店舗様が電話をとりませんでした", "title_en":"The store did not pick up the phone."},
     }
 
     CHILDSTATUS = (
@@ -112,7 +112,7 @@ class TwilioMonitor:
         return result
     
 
-    def set_status(self, parent_id, twilio_status, title=None, message=None):
+    def set_status(self, parent_id, twilio_status):
         """
         status引数をもとに、main_app_reservationchildに情報を追加する関数
         """
@@ -124,30 +124,27 @@ class TwilioMonitor:
                 self.__db.commit()
 
         insert_query = (
-            "INSERT INTO main_app_reservationchild (id, datetime, status, title, message, parent_id) "
-            "VALUES (%s, %s, %s, %s, %s, %s)"
+            "INSERT INTO main_app_reservationchild (id, datetime, status, title_ja, title_en, message_ja, message_en, parent_id) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         )
 
         unique_id = str(uuid.uuid4()).replace('-', '')
         datetime_now = str(datetime.now())
         status = self.STATUS_INFO[twilio_status]["status"]
 
-        if title:
-            status_title = title
-        else:
-            status_title = self.STATUS_INFO[twilio_status]["title"]
-
-        if message:
-            status_message = message
-        else:
-            status_message = self.STATUS_INFO[twilio_status]["message"]
+        status_title_ja = self.STATUS_INFO[twilio_status]["title_ja"]
+        status_title_en = self.STATUS_INFO[twilio_status]["title_en"]
+        status_message_ja = self.STATUS_INFO[twilio_status]["message_ja"]
+        status_message_en = self.STATUS_INFO[twilio_status]["message_en"]
 
         insert_data = (
             unique_id,
             datetime_now,
             status,
-            status_title, 
-            status_message,
+            status_title_ja,
+            status_title_en, 
+            status_message_ja,
+            status_message_en,
             parent_id,
         )
 
@@ -162,7 +159,7 @@ class TwilioMonitor:
         main_app_reservationparentのis_end statusを0から1へ変更する
         """
         insert_query = (
-            "INSERT INTO main_app_reservationchild (id, datetime, status, title, message, parent_id) "
+            "INSERT INTO main_app_reservationchild (id, datetime, status, title_ja, title_en, message_ja, message_en, parent_id) "
             "VALUES (%s, %s, %s, %s, %s, %s)"
         )
         
@@ -174,8 +171,10 @@ class TwilioMonitor:
                 unique_id,
                 datetime_now,
                 self.STATUS_INFO["failed"]["status"],
-                self.STATUS_INFO["failed"]["title"], 
-                self.STATUS_INFO["failed"]["message"],
+                self.STATUS_INFO["failed"]["title_ja"], 
+                self.STATUS_INFO["failed"]["title_en"], 
+                self.STATUS_INFO["failed"]["message_ja"],
+                self.STATUS_INFO["failed"]["message_en"],
                 parent_id,
             ))
         
@@ -187,7 +186,9 @@ class TwilioMonitor:
             datetime_now,
             self.END,
             "代理予約処理が完了しました", 
+            "Proxy booking has been completed"
             "代理予約処理が完了しました。",
+            "Proxy reservation processing has been completed.",
             parent_id,
         ))
 
