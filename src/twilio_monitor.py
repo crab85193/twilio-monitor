@@ -186,7 +186,7 @@ class TwilioMonitor:
             datetime_now,
             self.END,
             "代理予約処理が完了しました", 
-            "Proxy booking has been completed"
+            "Proxy booking has been completed",
             "代理予約処理が完了しました。",
             "Proxy reservation processing has been completed.",
             parent_id,
